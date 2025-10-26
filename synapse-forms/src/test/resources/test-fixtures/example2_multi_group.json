@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "1.0.0",
+  "formId": "kyc_sof_multi_group",
+  "layout": [
+    {
+      "type": "Group",
+      "labelKey": "kyc.sof.group1.income_title",
+      "elements": [
+        {
+          "type": "Row",
+          "elements": [
+            { "type": "Field", "key": "primarySource" }
+          ]
+        },
+        {
+          "type": "Row",
+          "elements": [
+            { "type": "Field", "key": "occupation" },
+            { "type": "Field", "key": "industry" }
+          ]
+        },
+        {
+          "type": "Row",
+          "elements": [
+            { "type": "Field", "key": "annualIncome" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "labelKey": "kyc.sof.group2.account_title",
+      "elements": [
+        {
+          "type": "Row",
+          "elements": [
+            { "type": "Field", "key": "accountPurpose" }
+          ]
+        },
+        {
+          "type": "Row",
+          "elements": [
+            { "type": "Field", "key": "initialDepositAmount" }
+          ]
+        }
+      ]
+    }
+  ],
+  "fields": {
+    "primarySource": {
+      "type": "string",
+      "widget": "select",
+      "labelKey": "kyc.sof.q1.source",
+      "optionsKey": "fund_sources",
+      "validation": { "required": true }
+    },
+    "occupation": {
+      "type": "string",
+      "widget": "text",
+      "labelKey": "kyc.sof.q2.occupation",
+      "validation": { "required": true }
+    },
+    "industry": {
+      "type": "string",
+      "widget": "select",
+      "labelKey": "kyc.sof.q3.industry",
+      "optionsKey": "industry_types"
+    },
+    "annualIncome": {
+      "type": "string",
+      "widget": "select",
+      "labelKey": "kyc.sof.q4.income",
+      "optionsKey": "income_brackets",
+      "validation": { "required": true }
+    },
+    "accountPurpose": {
+      "type": "string",
+      "widget": "select",
+      "labelKey": "kyc.sof.q5.purpose",
+      "optionsKey": "purpose_options",
+      "validation": { "required": true }
+    },
+    "initialDepositAmount": {
+      "type": "number",
+      "widget": "currency",
+      "labelKey": "kyc.sof.q6.deposit"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+package com.eainde.synapse.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Group implements LayoutElement {
+    private String type;
+    private String labelKey;
+    private List<LayoutElement> elements;
+
+}

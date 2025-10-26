@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "1.0.0",
+  "formId": "kyc_sof_grid_perms",
+  "layout": [
+    {
+      "type": "Group",
+      "labelKey": "kyc.sof.group1.primary_title",
+      "elements": [
+        {
+          "type": "Row",
+          "elements": [{ "type": "Field", "key": "primarySource" }]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "labelKey": "kyc.sof.group2.assets_title",
+      "elements": [
+        {
+          "type": "Row",
+          "elements": [{ "type": "Field", "key": "sofCountries" }]
+        }
+      ]
+    }
+  ],
+  "fields": {
+    "primarySource": {
+      "type": "string",
+      "widget": "select",
+      "labelKey": "kyc.sof.q1.source",
+      "optionsKey": "fund_sources",
+      "validation": { "required": true },
+      "permissions": ["VIEW:USER", "EDIT:ANALYST", "EDIT:ADMIN"]
+    },
+    "sofCountries": {
+      "type": "array",
+      "widget": "table",
+      "labelKey": "kyc.sof.grid.title",
+      "permissions": ["VIEW:USER", "EDIT:ANALYST", "EDIT:ADMIN"],
+      "items": {
+        "type": "object",
+        "fields": {
+          "country": {
+            "type": "string",
+            "widget": "select",
+            "labelKey": "kyc.sof.col.country",
+            "optionsKey": "country_list",
+            "validation": { "required": true }
+          },
+          "isHrtc": {
+            "type": "boolean",
+            "widget": "switch",
+            "labelKey": "kyc.sof.col.is_hrtc",
+            "permissions": ["VIEW:USER", "EDIT:ANALYST", "EDIT:ADMIN"]
+          },
+          "hrtcExposure": {
+            "type": "number",
+            "widget": "percentage",
+            "labelKey": "kyc.sof.col.exposure",
+            "validation": { "required": true, "minimum": 0, "maximum": 100 },
+            "permissions": ["VIEW:USER", "VIEW:ANALYST", "EDIT:ADMIN"]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "1.0.0",
+  "formId": "kyc_source_of_funds",
+  "layout": [
+    {
+      "type": "Group",
+      "labelKey": "kyc.sof.title",
+      "elements": [
+        {
+          "type": "Row",
+          "elements": [{ "type": "Field", "key": "primarySource" }]
+        },
+        {
+          "type": "Row",
+          "elements": [{ "type": "Field", "key": "occupation" }]
+        },
+        {
+          "type": "Row",
+          "elements": [{ "type": "Field", "key": "annualIncome" }]
+        },
+        {
+          "type": "Row",
+          "elements": [{ "type": "Field", "key": "accountPurpose" }]
+        },
+        {
+          "type": "Row",
+          "elements": [{ "type": "Field", "key": "otherDetails" }]
+        }
+      ]
+    }
+  ],
+  "fields": {
+    "primarySource": {
+      "type": "string",
+      "widget": "select",
+      "labelKey": "kyc.sof.q1.source",
+      "optionsKey": "fund_sources",
+      "validation": { "required": true }
+    },
+    "occupation": {
+      "type": "string",
+      "widget": "text",
+      "labelKey": "kyc.sof.q2.occupation",
+      "validation": { "required": true }
+    },
+    "annualIncome": {
+      "type": "string",
+      "widget": "select",
+      "labelKey": "kyc.sof.q3.income",
+      "optionsKey": "income_brackets",
+      "validation": { "required": true }
+    },
+    "accountPurpose": {
+      "type": "string",
+      "widget": "select",
+      "labelKey": "kyc.sof.q4.purpose",
+      "optionsKey": "purpose_options",
+      "validation": { "required": true }
+    },
+    "otherDetails": {
+      "type": "string",
+      "widget": "textarea",
+      "labelKey": "kyc.sof.q5.other"
+    }
+  }
+}

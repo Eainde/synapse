@@ -1,0 +1,141 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Synapse Form Definition v1.0.0",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "description": "Semantic version of the form definition schema.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "formId": {
+      "type": "string",
+      "description": "Unique identifier for the form."
+    },
+    "layout": {
+      "type": "array",
+      "description": "Top-level layout elements, typically groups.",
+      "items": {
+        "$ref": "#/definitions/layoutElement"
+      },
+      "minItems": 1
+    },
+    "fields": {
+      "type": "object",
+      "description": "Map of all field definitions, keyed by field ID.",
+      "additionalProperties": {
+        "$ref": "#/definitions/fieldDefinition"
+      }
+    }
+  },
+  "required": ["formId", "layout", "fields", "schemaVersion"],
+  "definitions": {
+    "layoutElement": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["Group", "Row", "Field"]
+        }
+      },
+      "required": ["type"],
+      "oneOf": [
+        { "$ref": "#/definitions/group" },
+        { "$ref": "#/definitions/row" },
+        { "$ref": "#/definitions/fieldRef" }
+      ]
+    },
+    "group": {
+      "type": "object",
+      "properties": {
+        "type": {"const": "Group"},
+        "labelKey": {"type": "string"},
+        "elements": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/layoutElement"}
+        }
+      },
+      "required": ["type", "elements"]
+    },
+    "row": {
+      "type": "object",
+      "properties": {
+        "type": {"const": "Row"},
+        "elements": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/layoutElement"}
+        }
+      },
+      "required": ["type", "elements"]
+    },
+    "fieldRef": {
+      "type": "object",
+      "properties": {
+        "type": {"const": "Field"},
+        "key": {"type": "string"}
+      },
+      "required": ["type", "key"]
+    },
+    "fieldDefinition": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["string", "number", "boolean", "array"]
+        }
+      },
+      "required": ["type", "widget", "labelKey"],
+      "oneOf": [
+        { "$ref": "#/definitions/simpleField" },
+        { "$ref": "#/definitions/arrayField" }
+      ]
+    },
+    "simpleField": {
+      "type": "object",
+      "properties": {
+        "type": {"enum": ["string", "number", "boolean"]},
+        "widget": {"type": "string"},
+        "labelKey": {"type": "string"},
+        "optionsKey": {"type": "string"},
+        "validation": {"$ref": "#/definitions/validationRules"},
+        "permissions": {"$ref": "#/definitions/permissions"}
+      }
+    },
+    "arrayField": {
+      "type": "object",
+      "properties": {
+        "type": {"const": "array"},
+        "widget": {"type": "string"},
+        "labelKey": {"type": "string"},
+        "items": {"$ref": "#/definitions/objectItem"},
+        "validation": {"$ref": "#/definitions/validationRules"},
+        "permissions": {"$ref": "#/definitions/permissions"}
+      },
+      "required": ["items"]
+    },
+    "objectItem": {
+      "type": "object",
+      "properties": {
+        "type": {"const": "object"},
+        "fields": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/definitions/fieldDefinition"}
+        }
+      },
+      "required": ["type", "fields"]
+    },
+    "validationRules": {
+      "type": "object",
+      "properties": {
+        "required": {"type": "boolean"},
+        "minimum": {"type": "number"},
+        "maximum": {"type": "number"}
+      },
+      "additionalProperties": false
+    },
+    "permissions": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

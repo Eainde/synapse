@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0.0",
+  "formId": "kyc_sof_country_grid",
+  "layout": [
+    {
+      "type": "Group",
+      "labelKey": "kyc.sof.title",
+      "elements": [
+        {
+          "type": "Row",
+          "elements": [
+            { "type": "Field", "key": "sofCountries" }
+          ]
+        }
+      ]
+    }
+  ],
+  "fields": {
+    "sofCountries": {
+      "type": "array",
+      "widget": "table",
+      "labelKey": "kyc.sof.grid.title",
+
+      "items": {
+        "type": "object",
+        "fields": {
+          "country": {
+            "type": "string",
+            "widget": "select",
+            "labelKey": "kyc.sof.col.country",
+            "optionsKey": "country_list"
+          },
+          "isHrtc": {
+            "type": "boolean",
+            "widget": "switch",
+            "labelKey": "kyc.sof.col.is_hrtc"
+          },
+          "hrtcExposure": {
+            "type": "number",
+            "widget": "percentage",
+            "labelKey": "kyc.sof.col.exposure"
+          }
+        }
+      }
+    }
+  }
+}
