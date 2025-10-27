@@ -1,12 +1,11 @@
-package com.eainde.synapse.forms.model;
+package com.eainde.synapse.forms.domain;
 
-import com.eainde.synapse.forms.model.fields.FieldDefinition;
-import com.eainde.synapse.forms.model.layout.LayoutElement;
+import com.eainde.synapse.forms.domain.fields.FieldDefinition;
+import com.eainde.synapse.forms.domain.layout.LayoutElement;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 

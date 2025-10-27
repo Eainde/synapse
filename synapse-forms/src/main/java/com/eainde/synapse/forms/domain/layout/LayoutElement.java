@@ -1,7 +1,10 @@
-package com.eainde.synapse.forms.model.layout;
+package com.eainde.synapse.forms.domain.layout;
 
+import com.eainde.synapse.forms.domain.rules.VisibilityRule;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import java.util.List;
 
 /**
  * Polymorphic interface for all layout components (Group, Row, FieldRef).
@@ -18,4 +21,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 public interface LayoutElement {
     String getType();
+    List<VisibilityRule> getVisibilityRules();
 }

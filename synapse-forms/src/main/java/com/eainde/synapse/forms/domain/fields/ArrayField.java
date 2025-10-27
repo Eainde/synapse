@@ -1,4 +1,4 @@
-package com.eainde.synapse.forms.model.fields;
+package com.eainde.synapse.forms.domain.fields;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.Valid;

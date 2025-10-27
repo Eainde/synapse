@@ -3,9 +3,11 @@ package com.eainde.synapse.forms.config;
 import com.eainde.synapse.forms.DefaultJsonFormatRenderer;
 import com.eainde.synapse.forms.JsonFormatRenderer;
 import com.eainde.synapse.forms.TargetFormat;
-import com.eainde.synapse.forms.mapper.CanonicalToTargetMapper;
-import com.eainde.synapse.forms.mapper.DynamicFormV1Mapper;
+import com.eainde.synapse.forms.adapter.JsonFormAdapter;
+import com.eainde.synapse.forms.adapter.SynapseFormV1Adapter;
+import com.eainde.synapse.forms.adapter.SynapseFormV2Adapter;
 import com.eainde.synapse.forms.validation.SchemaValidator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -31,7 +33,8 @@ public class FormRendererConfig {
                 // Configure for stable, deterministic output
                 .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     /**
@@ -53,8 +56,15 @@ public class FormRendererConfig {
     /**
      * Creates the V1 mapper.
      */
-    public DynamicFormV1Mapper dynamicFormV1Mapper(ObjectMapper objectMapper) {
-        return new DynamicFormV1Mapper(objectMapper);
+    public SynapseFormV1Adapter dynamicFormV1Mapper(ObjectMapper objectMapper) {
+        return new SynapseFormV1Adapter(objectMapper);
+    }
+
+    /**
+     * Creates the V2 mapper.
+     */
+    public SynapseFormV2Adapter dynamicFormV2Mapper(ObjectMapper objectMapper) {
+        return new SynapseFormV2Adapter(objectMapper);
     }
 
     /**
@@ -66,8 +76,9 @@ public class FormRendererConfig {
         SchemaValidator schemaValidator = schemaValidator();
 
         // This is the extensible registry
-        Map<TargetFormat, CanonicalToTargetMapper> mappers = Map.of(
-                TargetFormat.SYNAPSE_FORM_V1, dynamicFormV1Mapper(objectMapper)
+        Map<TargetFormat, JsonFormAdapter> mappers = Map.of(
+                TargetFormat.SYNAPSE_FORM_V1, dynamicFormV1Mapper(objectMapper),
+                TargetFormat.SYNAPSE_FORM_V2, dynamicFormV2Mapper(objectMapper)
         );
 
         return new DefaultJsonFormatRenderer(validator, schemaValidator, mappers);

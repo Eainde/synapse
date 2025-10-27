@@ -1,7 +1,7 @@
 package com.eainde.synapse.forms;
 
 import com.eainde.synapse.forms.exception.RenderingException;
-import com.eainde.synapse.forms.model.CanonicalFormMessage;
+import com.eainde.synapse.forms.domain.CanonicalFormMessage;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**

@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "2.0.0",
+  "formId": "kyc_sof_grid_perms_conditional",
+  "layout": [
+    {
+      "type": "Group",
+      "labelKey": "kyc.sof.group1.primary_title",
+      "elements": [
+        {
+          "type": "Row",
+          "elements": [
+            {
+              "type": "Field",
+              "key": "primarySource"
+            }
+          ]
+        },
+        {
+          "type": "Row",
+          "visibilityRules": [
+            {
+              "when": {
+                "allOf": [
+                  {
+                    "field": "primarySource",
+                    "operator": "EQUALS",
+                    "value": "OTHER_SOURCE"
+                  }
+                ]
+              },
+              "visible": true
+            }
+          ],
+          "elements": [
+            {
+              "type": "Field",
+              "key": "otherSourceDetails"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Group",
+      "labelKey": "kyc.sof.group2.assets_title",
+      "elements": [
+        {
+          "type": "Row",
+          "elements": [
+            {
+              "type": "Field",
+              "key": "sofCountries"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "fields": {
+    "primarySource": {
+      "type": "string",
+      "widget": "select",
+      "labelKey": "kyc.sof.q1.source",
+      "optionsKey": "fund_sources",
+      "validation": {
+        "required": true
+      },
+      "permissions": [
+        "VIEW:USER",
+        "EDIT:ANALYST",
+        "EDIT:ADMIN"
+      ]
+    },
+    "otherSourceDetails": {
+      "type": "string",
+      "widget": "textarea",
+      "labelKey": "kyc.sof.q1.other_details",
+      "validation": {
+        "rules": [
+          {
+            "when": {
+              "allOf": [
+                {
+                  "field": "primarySource",
+                  "operator": "EQUALS",
+                  "value": "OTHER_SOURCE"
+                }
+              ]
+            },
+            "then": {
+              "required": true
+            }
+          }
+        ]
+      }
+    },
+    "sofCountries": {
+      "type": "array",
+      "widget": "table",
+      "labelKey": "kyc.sof.grid.title",
+      "permissions": [
+        "VIEW:USER",
+        "EDIT:ANALYST",
+        "EDIT:ADMIN"
+      ],
+      "items": {
+        "type": "object",
+        "fields": {
+          "country": {
+            "type": "string",
+            "widget": "select",
+            "labelKey": "kyc.sof.col.country",
+            "optionsKey": "country_list",
+            "validation": {
+              "required": true
+            }
+          },
+          "isHrtc": {
+            "type": "boolean",
+            "widget": "switch",
+            "labelKey": "kyc.sof.col.is_hrtc",
+            "permissions": [
+              "VIEW:USER",
+              "EDIT:ANALYST",
+              "EDIT:ADMIN"
+            ]
+          },
+          "hrtcExposure": {
+            "type": "number",
+            "widget": "percentage",
+            "labelKey": "kyc.sof.col.exposure",
+            "validation": {
+              "minimum": 0,
+              "maximum": 100,
+              "rules": [
+                {
+                  "when": {
+                    "allOf": [
+                      {
+                        "field": "isHrtc",
+                        "operator": "EQUALS",
+                        "value": true
+                      }
+                    ]
+                  },
+                  "then": {
+                    "required": true
+                  }
+                }
+              ]
+            },
+            "permissions": [
+              "VIEW:USER",
+              "VIEW:ANALYST",
+              "EDIT:ADMIN"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

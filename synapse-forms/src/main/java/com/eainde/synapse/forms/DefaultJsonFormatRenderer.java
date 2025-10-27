@@ -2,8 +2,8 @@ package com.eainde.synapse.forms;
 
 import com.eainde.synapse.forms.exception.RenderingException;
 import com.eainde.synapse.forms.exception.ValidationError;
-import com.eainde.synapse.forms.mapper.CanonicalToTargetMapper;
-import com.eainde.synapse.forms.model.CanonicalFormMessage;
+import com.eainde.synapse.forms.adapter.JsonFormAdapter;
+import com.eainde.synapse.forms.domain.CanonicalFormMessage;
 import com.eainde.synapse.forms.validation.SchemaValidator;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.ConstraintViolation;
@@ -22,11 +22,11 @@ public class DefaultJsonFormatRenderer implements JsonFormatRenderer {
 
     private final Validator beanValidator;
     private final SchemaValidator schemaValidator;
-    private final Map<TargetFormat, CanonicalToTargetMapper> mappers;
+    private final Map<TargetFormat, JsonFormAdapter> mappers;
 
     public DefaultJsonFormatRenderer(Validator beanValidator,
                                      SchemaValidator schemaValidator,
-                                     Map<TargetFormat, CanonicalToTargetMapper> mappers) {
+                                     Map<TargetFormat, JsonFormAdapter> mappers) {
         this.beanValidator = beanValidator;
         this.schemaValidator = schemaValidator;
         this.mappers = mappers;
@@ -41,7 +41,7 @@ public class DefaultJsonFormatRenderer implements JsonFormatRenderer {
     @Override
     public JsonNode renderToNode(CanonicalFormMessage message, TargetFormat format) throws RenderingException {
         // 1. Get the correct mapper
-        CanonicalToTargetMapper mapper = mappers.get(format);
+        JsonFormAdapter mapper = mappers.get(format);
         if (mapper == null) {
             throw new RenderingException("No mapper configured for format: " + format, "ERR_NO_MAPPER", null);
         }

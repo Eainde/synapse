@@ -1,6 +1,6 @@
-package com.eainde.synapse.forms.mapper;
+package com.eainde.synapse.forms.adapter;
 
-import com.eainde.synapse.forms.model.CanonicalFormMessage;
+import com.eainde.synapse.forms.domain.CanonicalFormMessage;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -8,11 +8,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Mapper for DYNAMIC_FORM_V1.
  * This is a 1:1 mapping, so it just uses ObjectMapper to convert the POJO.
  */
-public class DynamicFormV1Mapper implements CanonicalToTargetMapper {
+public class SynapseFormV1Adapter implements JsonFormAdapter {
 
     private final ObjectMapper objectMapper;
 
-    public DynamicFormV1Mapper(ObjectMapper objectMapper) {
+    public SynapseFormV1Adapter(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 

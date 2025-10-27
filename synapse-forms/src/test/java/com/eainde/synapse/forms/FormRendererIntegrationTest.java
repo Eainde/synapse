@@ -3,11 +3,12 @@ package com.eainde.synapse.forms;
 import com.eainde.synapse.forms.config.FormRendererConfig;
 import com.eainde.synapse.forms.exception.RenderingException;
 import com.eainde.synapse.forms.exception.ValidationError;
-import com.eainde.synapse.forms.model.CanonicalFormMessage;
-import com.eainde.synapse.forms.model.fields.*;
-import com.eainde.synapse.forms.model.layout.FieldRef;
-import com.eainde.synapse.forms.model.layout.Group;
-import com.eainde.synapse.forms.model.layout.Row;
+import com.eainde.synapse.forms.domain.CanonicalFormMessage;
+import com.eainde.synapse.forms.domain.fields.*;
+import com.eainde.synapse.forms.domain.layout.FieldRef;
+import com.eainde.synapse.forms.domain.layout.Group;
+import com.eainde.synapse.forms.domain.layout.Row;
+import com.eainde.synapse.forms.domain.rules.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
@@ -238,5 +239,105 @@ class FormRendererIntegrationTest {
                     assertThat(error.code()).isEqualTo("1016"); // networknt code for minItems
                     assertThat(error.jsonPointer()).isEqualTo("$.layout");
                 });
+    }
+
+    @Test
+    void testRenderConditionalFormV2_Example4() throws Exception {
+        // 1. Define the conditional rule for 'hrtcExposure'
+        Condition hrtcCondition = new Condition("isHrtc", Operator.EQUALS, true);
+        ValidationRule hrtcRule = new ValidationRule(
+                ConditionBlock.allOf(hrtcCondition),
+                new ValidationAction(true, null, null) // then: { required: true }
+        );
+
+        // 2. Define the 'sofCountries' grid columns
+        FieldDefinition countryField = SimpleField.builder()
+                .type("string").widget("select").labelKey("kyc.sof.col.country")
+                .optionsKey("country_list").validation(ValidationRules.builder().required(true).build()).build();
+
+        FieldDefinition isHrtcField = SimpleField.builder()
+                .type("boolean").widget("switch").labelKey("kyc.sof.col.is_hrtc")
+                .permissions(List.of("VIEW:USER", "EDIT:ANALYST", "EDIT:ADMIN")).build();
+
+        FieldDefinition hrtcExposureField = SimpleField.builder()
+                .type("number").widget("percentage").labelKey("kyc.sof.col.exposure")
+                .validation(ValidationRules.builder()
+                        .minimum(0)
+                        .maximum(100)
+                        .rules(List.of(hrtcRule)) // <-- Add the conditional rule
+                        .build())
+                .permissions(List.of("VIEW:USER", "VIEW:ANALYST", "EDIT:ADMIN")).build();
+
+        // 3. Define the 'sofCountries' ArrayField
+        ArrayField sofCountriesField = ArrayField.builder()
+                .widget("table").labelKey("kyc.sof.grid.title")
+                .permissions(List.of("VIEW:USER", "EDIT:ANALYST", "EDIT:ADMIN"))
+                .items(new ObjectItem(Map.of(
+                        "country", countryField,
+                        "isHrtc", isHrtcField,
+                        "hrtcExposure", hrtcExposureField
+                )))
+                .build();
+
+        // 4. Define the conditional rule for 'otherSourceDetails'
+        Condition otherSourceCondition = new Condition("primarySource", Operator.EQUALS, "OTHER_SOURCE");
+
+        ValidationRule otherSourceValidationRule = new ValidationRule(
+                ConditionBlock.allOf(otherSourceCondition),
+                new ValidationAction(true, null, null) // then: { required: true }
+        );
+
+        VisibilityRule otherSourceVisibilityRule = new VisibilityRule(
+                ConditionBlock.allOf(otherSourceCondition),
+                true // then: { visible: true }
+        );
+
+        // 5. Define the 'primarySource' and 'otherSourceDetails' fields
+        SimpleField primarySourceField = SimpleField.builder()
+                .type("string").widget("select").labelKey("kyc.sof.q1.source")
+                .optionsKey("fund_sources").validation(ValidationRules.builder().required(true).build())
+                .permissions(List.of("VIEW:USER", "EDIT:ANALYST", "EDIT:ADMIN")).build();
+
+        SimpleField otherSourceDetailsField = SimpleField.builder()
+                .type("string").widget("textarea").labelKey("kyc.sof.q1.other_details")
+                .validation(ValidationRules.builder()
+                        .rules(List.of(otherSourceValidationRule)) // <-- Add the conditional validation
+                        .build())
+                .build();
+
+        // 6. Define the Layout
+        Group group1 = new Group(
+                "kyc.sof.group1.primary_title",
+                List.of(
+                        new Row(List.of(new FieldRef("primarySource"))), // Regular row
+                        new Row( // Conditional row
+                                List.of(new FieldRef("otherSourceDetails")),
+                                List.of(otherSourceVisibilityRule) // <-- Add the conditional visibility
+                        )
+                )
+        );
+
+        Group group2 = new Group(
+                "kyc.sof.group2.assets_title",
+                List.of(new Row(List.of(new FieldRef("sofCountries"))))
+        );
+
+        // 7. Assemble the final message
+        CanonicalFormMessage message = CanonicalFormMessage.builder()
+                .formId("kyc_sof_grid_perms_conditional")
+                .schemaVersion("2.0.0") // <-- Use V2 schema version
+                .layout(List.of(group1, group2))
+                .fields(Map.of(
+                        "primarySource", primarySourceField,
+                        "otherSourceDetails", otherSourceDetailsField,
+                        "sofCountries", sofCountriesField
+                ))
+                .build();
+
+        // 8. Render and assert
+        JsonNode actualNode = renderer.renderToNode(message, TargetFormat.SYNAPSE_FORM_V2);
+        JsonNode expectedNode = getExpectedJson("test-fixtures/example4_v2_conditional.json");
+
+        assertThat(actualNode).isEqualTo(expectedNode);
     }
 }
