@@ -12,6 +12,7 @@
         <module>synapse-app</module>
         <module>synapse-forms</module>
         <module>synapse-submissions</module>
+        <module>synapse-external-api-adapter</module>
     </modules>
 
     <properties>
