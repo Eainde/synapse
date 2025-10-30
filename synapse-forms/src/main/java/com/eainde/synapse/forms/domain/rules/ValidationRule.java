@@ -4,6 +4,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 public record ValidationRule(
-        @Valid @NotNull ConditionBlock when,
+        @Valid @NotNull RuleBlock when,
         @Valid @NotNull ValidationAction then
 ) {}

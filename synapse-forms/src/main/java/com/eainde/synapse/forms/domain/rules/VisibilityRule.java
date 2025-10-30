@@ -4,6 +4,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 public record VisibilityRule(
-        @Valid @NotNull ConditionBlock when,
+        @Valid @NotNull RuleBlock when,
         boolean visible // The 'then' action
 ) {}

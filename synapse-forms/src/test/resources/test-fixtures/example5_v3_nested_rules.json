@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "3.0.0",
+  "formId": "multi_level_dependency_form",
+  "layout": [
+    { "type": "Row", "elements": [ { "type": "Field", "key": "UDP_1135" } ] },
+    { "type": "Row", "elements": [ { "type": "Field", "key": "UDP_1186" } ] },
+    { "type": "Row", "elements": [ { "type": "Field", "key": "UDP_1628" } ] },
+    { "type": "Row", "elements": [ { "type": "Field", "key": "UDP_1543" } ] },
+    { "type": "Row", "elements": [ { "type": "Field", "key": "UDP_22" } ] },
+    {
+      "type": "Row",
+      "elements": [ { "type": "Field", "key": "UDP_477" } ]
+    }
+  ],
+  "fields": {
+    "UDP_1135": { "type": "string", "widget": "radio", "labelKey": "Question 1135 (Yes/No)" },
+    "UDP_1186": { "type": "string", "widget": "radio", "labelKey": "Question 1186 (Yes/No)" },
+    "UDP_1628": { "type": "string", "widget": "radio", "labelKey": "Question 1628 (Yes/No)" },
+    "UDP_1543": { "type": "string", "widget": "radio", "labelKey": "Question 1543 (Yes/No)" },
+    "UDP_22":   { "type": "string", "widget": "radio", "labelKey": "Question 22 (Yes/No)" },
+
+    "UDP_477": {
+      "type": "string",
+      "widget": "textarea",
+      "labelKey": "Question 477 (The Dependent Question)",
+      "validation": {
+        "rules": [
+          {
+            "when": {
+              "operator": "AND",
+              "conditions": [
+                {
+                  "field": "UDP_22",
+                  "operator": "EQUALS",
+                  "value": "YES"
+                }
+              ],
+              "rules": [
+                {
+                  "operator": "AND",
+                  "conditions": [
+                    { "field": "UDP_1135", "operator": "EQUALS", "value": "YES" },
+                    { "field": "UDP_1186", "operator": "EQUALS", "value": "YES" }
+                  ]
+                },
+                {
+                  "operator": "OR",
+                  "conditions": [
+                    { "field": "UDP_1628", "operator": "EQUALS", "value": "YES" },
+                    { "field": "UDP_1543", "operator": "EQUALS", "value": "YES" }
+                  ]
+                }
+              ]
+            },
+            "then": {
+              "required": true
+            }
+          }
+        ]
+      }
+    }
+  }
+}

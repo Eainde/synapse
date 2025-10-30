@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.Valid;
 import java.util.List;
 
+//TODO not needed
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ConditionBlock(
         @Valid List<Condition> allOf,

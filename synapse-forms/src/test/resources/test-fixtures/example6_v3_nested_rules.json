@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "3.0.0",
+  "formId": "nested_logic_form",
+  "layout": [
+    { "type": "Row", "elements": [ { "type": "Field", "key": "qB" } ] },
+    { "type": "Row", "elements": [ { "type": "Field", "key": "qC" } ] },
+    { "type": "Row", "elements": [ { "type": "Field", "key": "qD" } ] },
+    {
+      "type": "Row",
+      "elements": [ { "type": "Field", "key": "questionA" } ],
+      "visibilityRules": [
+        {
+          "when": {
+            "operator": "AND",
+            "conditions": [
+              { "field": "qB", "operator": "IS_NOT_BLANK" }
+            ],
+            "rules": [
+              {
+                "operator": "OR",
+                "conditions": [
+                  { "field": "qC", "operator": "IS_NOT_BLANK" },
+                  { "field": "qD", "operator": "IS_NOT_BLANK" }
+                ]
+              }
+            ]
+          },
+          "visible": true
+        }
+      ]
+    }
+  ],
+  "fields": {
+    "qB": { "type": "string", "widget": "text", "labelKey": "Question B" },
+    "qC": { "type": "string", "widget": "text", "labelKey": "Question C" },
+    "qD": { "type": "string", "widget": "text", "labelKey": "Question D" },
+    "questionA": { "type": "string", "widget": "text", "labelKey": "Question A" }
+  }
+}

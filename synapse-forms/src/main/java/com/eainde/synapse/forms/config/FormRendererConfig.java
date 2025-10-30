@@ -6,6 +6,7 @@ import com.eainde.synapse.forms.TargetFormat;
 import com.eainde.synapse.forms.adapter.JsonFormAdapter;
 import com.eainde.synapse.forms.adapter.SynapseFormV1Adapter;
 import com.eainde.synapse.forms.adapter.SynapseFormV2Adapter;
+import com.eainde.synapse.forms.adapter.SynapseFormV3Adapter;
 import com.eainde.synapse.forms.validation.SchemaValidator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -68,6 +69,13 @@ public class FormRendererConfig {
     }
 
     /**
+     * Creates the V3 mapper.
+     */
+    public SynapseFormV3Adapter dynamicFormV3Mapper(ObjectMapper objectMapper) {
+        return new SynapseFormV3Adapter(objectMapper);
+    }
+
+    /**
      * Assembles and returns the main JsonFormatRenderer.
      */
     public JsonFormatRenderer jsonFormatRenderer() {
@@ -78,7 +86,8 @@ public class FormRendererConfig {
         // This is the extensible registry
         Map<TargetFormat, JsonFormAdapter> mappers = Map.of(
                 TargetFormat.SYNAPSE_FORM_V1, dynamicFormV1Mapper(objectMapper),
-                TargetFormat.SYNAPSE_FORM_V2, dynamicFormV2Mapper(objectMapper)
+                TargetFormat.SYNAPSE_FORM_V2, dynamicFormV2Mapper(objectMapper),
+                TargetFormat.SYNAPSE_FORM_V3, dynamicFormV3Mapper(objectMapper)
         );
 
         return new DefaultJsonFormatRenderer(validator, schemaValidator, mappers);

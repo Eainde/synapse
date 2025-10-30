@@ -9,7 +9,8 @@ public enum TargetFormat {
      * The v1.0 schema for dynamic forms.
      */
     SYNAPSE_FORM_V1("synapse-form-v1.0.0.schema.json"),
-    SYNAPSE_FORM_V2("synapse-form-v2.0.0.schema.json");
+    SYNAPSE_FORM_V2("synapse-form-v2.0.0.schema.json"),
+    SYNAPSE_FORM_V3("synapse-form-v3.0.0.schema.json");
 
     private final String schemaName;
 

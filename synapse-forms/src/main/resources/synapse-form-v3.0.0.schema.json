@@ -1,0 +1,168 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dynamic Form Definition v3.0.0",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "description": "Semantic version of the form definition schema.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "formId": { "type": "string" },
+    "layout": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/layoutElement" }
+    },
+    "fields": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/fieldDefinition" }
+    }
+  },
+  "required": ["formId", "layout", "fields", "schemaVersion"],
+  "definitions": {
+    "layoutElement": {
+      "type": "object",
+      "oneOf": [
+        { "$ref": "#/definitions/group" },
+        { "$ref": "#/definitions/row" },
+        { "$ref": "#/definitions/fieldRef" }
+      ]
+    },
+    "group": {
+      "type": "object",
+      "properties": {
+        "type": {"const": "Group"},
+        "labelKey": {"type": "string"},
+        "elements": { "type": "array", "items": {"$ref": "#/definitions/layoutElement"} },
+        "visibilityRules": { "type": "array", "items": { "$ref": "#/definitions/visibilityRule" } }
+      },
+      "required": ["type", "elements"]
+    },
+    "row": {
+      "type": "object",
+      "properties": {
+        "type": {"const": "Row"},
+        "elements": { "type": "array", "items": {"$ref": "#/definitions/layoutElement"} },
+        "visibilityRules": { "type": "array", "items": { "$ref": "#/definitions/visibilityRule" } }
+      },
+      "required": ["type", "elements"]
+    },
+    "fieldRef": {
+      "type": "object",
+      "properties": {
+        "type": {"const": "Field"},
+        "key": {"type": "string"},
+        "visibilityRules": { "type": "array", "items": { "$ref": "#/definitions/visibilityRule" } }
+      },
+      "required": ["type", "key"]
+    },
+    "fieldDefinition": {
+      "type": "object",
+      "oneOf": [
+        { "$ref": "#/definitions/simpleField" },
+        { "$ref": "#/definitions/arrayField" }
+      ]
+    },
+    "simpleField": {
+      "type": "object",
+      "properties": {
+        "type": {"enum": ["string", "number", "boolean"]},
+        "widget": {"type": "string"},
+        "labelKey": {"type": "string"},
+        "optionsKey": {"type": "string"},
+        "validation": {"$ref": "#/definitions/validationRules"},
+        "permissions": {"$ref": "#/definitions/permissions"}
+      },
+      "required": ["type", "widget", "labelKey"]
+    },
+    "arrayField": {
+      "type": "object",
+      "properties": {
+        "type": {"const": "array"},
+        "widget": {"type": "string"},
+        "labelKey": {"type": "string"},
+        "items": {"$ref": "#/definitions/objectItem"},
+        "validation": {"$ref": "#/definitions/validationRules"},
+        "permissions": {"$ref": "#/definitions/permissions"}
+      },
+      "required": ["items"]
+    },
+    "objectItem": {
+      "type": "object",
+      "properties": {
+        "type": {"const": "object"},
+        "fields": { "type": "object", "additionalProperties": {"$ref": "#/definitions/fieldDefinition"} }
+      },
+      "required": ["type", "fields"]
+    },
+    "permissions": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "validationRules": {
+      "type": "object",
+      "properties": {
+        "required": {"type": "boolean"},
+        "minimum": {"type": "number"},
+        "maximum": {"type": "number"},
+        "rules": { "type": "array", "items": { "$ref": "#/definitions/validationRule" } }
+      },
+      "additionalProperties": false
+    },
+
+    "operator": {
+      "type": "string",
+      "enum": ["EQUALS", "NOT_EQUALS", "IN", "NOT_IN", "IS_BLANK", "IS_NOT_BLANK"]
+    },
+    "condition": {
+      "type": "object",
+      "properties": {
+        "field": { "type": "string" },
+        "operator": { "$ref": "#/definitions/operator" },
+        "value": { }
+      },
+      "required": ["field", "operator"]
+    },
+
+    "logicalOperator": {
+      "type": "string",
+      "enum": ["AND", "OR"]
+    },
+    "ruleBlock": {
+      "type": "object",
+      "properties": {
+        "operator": { "$ref": "#/definitions/logicalOperator" },
+        "conditions": { "type": "array", "items": { "$ref": "#/definitions/condition" } },
+        "rules": { "type": "array", "items": { "$ref": "#/definitions/ruleBlock" } }
+      },
+      "required": ["operator"],
+      "description": "A recursive block for defining nested logic. Must have an operator, and can contain either conditions, other rules, or both."
+    },
+
+    "visibilityRule": {
+      "type": "object",
+      "properties": {
+        "when": { "$ref": "#/definitions/ruleBlock" },
+        "visible": { "type": "boolean" }
+      },
+      "required": ["when", "visible"]
+    },
+    "validationAction": {
+      "type": "object",
+      "properties": {
+        "required": {"type": "boolean"},
+        "minimum": {"type": "number"},
+        "maximum": {"type": "number"}
+      },
+      "minProperties": 1
+    },
+    "validationRule": {
+      "type": "object",
+      "properties": {
+        "when": { "$ref": "#/definitions/ruleBlock" },
+        "then": { "$ref": "#/definitions/validationAction" }
+      },
+      "required": ["when", "then"]
+    }
+  }
+}
