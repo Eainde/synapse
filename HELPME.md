@@ -1,28 +1,35 @@
 @startuml
-' --- Settings ---
-skinparam componentStyle rectangle
-skinparam roundCorner 10
-skinparam linetype ortho
-skinparam database {
-BorderColor black
-BackgroundColor #e5ccff
-}
+' Layout
+left to right direction
+skinparam shadowing false
 skinparam rectangle {
-BorderColor black
+BorderColor #555
 }
+skinparam database {
+BorderColor #555
+}
+title Outreach Data Flow
 
-' --- Component Definitions ---
-rectangle "FF UI" as UI #cce5ff
+rectangle "FF UI" as FF
+rectangle "Task Manager" as TM
+rectangle "FMR" as FMR
+database "Forms DB" as DB
 
-rectangle "TASK MANAGER\n\nIt will create outreach\ntasks for each PCU-ID" as TM #ccffcc
+FF --> TM : PCU-IDs for outreach
 
-rectangle "FMR\n\nNeeds are resolve\nPCU-IDS &\nfetch static data" as FMR #ffebcc
+note right of TM
+Creates outreach tasks
+for each PCU-ID
+end note
 
-database "Saves the form\nin DB with\nForm/Section ID" as DB #e5ccff
+TM --> FMR : PCU-ID
 
-' --- Relationships ---
-UI -right-> TM : PCU-IDS\nFOR OUTREACH
-TM -right-> FMR : PCU-ID
-FMR -down-> DB
+note right of FMR
+Needs to resolve PCU-IDs
+and retrieve data
+end note
+
+FMR --> DB : Save form data\n(with Form/Section ID)
+DB --> FMR : Resolved data
 
 @enduml
