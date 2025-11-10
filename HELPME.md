@@ -13,15 +13,11 @@ BorderColor black
 
 ' --- Component Definitions ---
 rectangle "FF UI" as UI #cce5ff
-rectangle "TASK MANAGER" as TM #ccffcc {
-It will create outreach
-tasks for each PCU-ID
-}
-rectangle "FMR" as FMR #ffebcc {
-Needs are resolve
-PCU-IDS &
-fetch static data
-}
+
+rectangle "TASK MANAGER\n\nIt will create outreach\ntasks for each PCU-ID" as TM #ccffcc
+
+rectangle "FMR\n\nNeeds are resolve\nPCU-IDS &\nfetch static data" as FMR #ffebcc
+
 database "Saves the form\nin DB with\nForm/Section ID" as DB #e5ccff
 
 ' --- Relationships ---
